@@ -10,6 +10,7 @@ const isVercel = process.env.VERCEL === '1' || process.env.IS_WEB === 'true';
 module.exports = {
   // 生产环境打包不输出 map
   productionSourceMap: false,
+  lintOnSave: process.env.NODE_ENV !== 'production',
   devServer: {
     disableHostCheck: true,
     port: process.env.DEV_SERVER_PORT || 8080,
