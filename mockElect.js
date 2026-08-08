@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const electronIndexPath = path.join(__dirname, '../node_modules/electron/index.js');
+const electronIndexPath = path.join(__dirname, './node_modules/electron/index.js');
 
 if (fs.existsSync(electronIndexPath)) {
   const mockContent = `
