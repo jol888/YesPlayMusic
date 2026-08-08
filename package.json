@@ -6,7 +6,7 @@
   "author": "qier222<qier222@outlook.com>",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service build",
     "lint": "vue-cli-service lint",
     "electron:build": "vue-cli-service electron:build -p never",
     "electron:build-all": "vue-cli-service electron:build -p never -mwl",
@@ -20,10 +20,11 @@
     "postuninstall": "electron-builder install-app-deps",
     "prettier": "npx prettier --write ./src",
     "netease_api:run": "npx @neteaseapireborn/api"
+    
   },
   "main": "background.js",
   "engines": {
-    "node": "14 || 16"
+    "node": "24.x"
   },
   "dependencies": {
     "@neteaseapireborn/api": "^4.29.7",
