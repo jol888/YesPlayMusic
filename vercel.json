@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:match*",
+      "destination": "htts://netease-cloud-music-api-bay-sigma.vercel.app/:match*"
+    }
+  ]
+}
