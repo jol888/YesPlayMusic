@@ -4,6 +4,9 @@ function resolve(dir) {
   return path.join(__dirname, dir);
 }
 
+// 判断当前是否在 Vercel 或 Web 环境下构建
+const isVercel = process.env.VERCEL === '1' || process.env.IS_WEB === 'true';
+
 module.exports = {
   // 生产环境打包不输出 map
   productionSourceMap: false,
@@ -29,9 +32,6 @@ module.exports = {
     manifestOptions: {
       background_color: '#335eea',
     },
-    // workboxOptions: {
-    //   swSrc: "dev/sw.js",
-    // },
   },
   pages: {
     index: {
@@ -43,6 +43,15 @@ module.exports = {
     },
   },
   chainWebpack(config) {
+    // 1. 在 Web 打包时 Mock 掉 electron 模块，防止 `require('electron')` 抛错崩溃
+    if (isVercel) {
+      config.plugin('define').tap(args => {
+        args[0]['IS_ELECTRON'] = false;
+        return args;
+      });
+      config.resolve.alias.set('electron$', resolve('src/utils/emptyPolyfill.js'));
+    }
+
     config.module.rules.delete('svg');
     config.module.rule('svg').exclude.add(resolve('src/assets/icons')).end();
     config.module
@@ -56,6 +65,7 @@ module.exports = {
         symbolId: 'icon-[name]',
       })
       .end();
+
     config.module
       .rule('napi')
       .test(/\.node$/)
@@ -70,10 +80,10 @@ module.exports = {
       .end()
       .use('esbuild-loader')
       .loader('esbuild-loader')
-      .options({ target: 'es2015', format: "cjs" })
+      .options({ target: 'es2015', format: 'cjs' })
       .end();
 
-    // LimitChunkCountPlugin 可以通过合并块来对块进行后期处理。用以解决 chunk 包太多的问题
+    // LimitChunkCountPlugin
     config.plugin('chunkPlugin').use(webpack.optimize.LimitChunkCountPlugin, [
       {
         maxChunks: 3,
@@ -83,14 +93,12 @@ module.exports = {
   },
   // 添加插件的配置
   pluginOptions: {
-    // electron-builder的配置文件
     electronBuilder: {
       nodeIntegration: true,
       externals: ['@unblockneteasemusic/rust-napi'],
       builderOptions: {
         productName: 'YesPlayMusic',
         copyright: 'Copyright © YesPlayMusic',
-        // compression: "maximum", // 机器好的可以打开，配置压缩，开启后会让 .AppImage 格式的客户端启动缓慢
         asar: true,
         publish: [
           {
@@ -169,7 +177,6 @@ module.exports = {
           deleteAppDataOnUninstall: true,
         },
       },
-      // 主线程的配置文件
       chainWebpackMainProcess: config => {
         config.plugin('define').tap(args => {
           args[0]['IS_ELECTRON'] = true;
@@ -187,22 +194,15 @@ module.exports = {
           .end()
           .use('esbuild-loader')
           .loader('esbuild-loader')
-          .options({ target: 'es2015', format: "cjs" })
+          .options({ target: 'es2015', format: 'cjs' })
           .end();
       },
-      // 渲染线程的配置文件
       chainWebpackRendererProcess: config => {
-        // 渲染线程的一些其他配置
-        // Chain webpack config for electron renderer process only
-        // The following example will set IS_ELECTRON to true in your app
         config.plugin('define').tap(args => {
           args[0]['IS_ELECTRON'] = true;
           return args;
         });
       },
-      // 主入口文件
-      // mainProcessFile: 'src/main.js',
-      // mainProcessArgs: []
     },
   },
 };
