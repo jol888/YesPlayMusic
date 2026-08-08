@@ -6,7 +6,7 @@
   "author": "qier222<qier222@outlook.com>",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build":  "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service build --verbose",
+    "build":  "node mockElect.js && NODE_OPTIONS=--openssl-legacy-provider vue-cli-service build --verbose",
     "lint": "vue-cli-service lint",
     "prettier": "npx prettier --write ./src",
     "netease_api:run": "npx @neteaseapireborn/api"
