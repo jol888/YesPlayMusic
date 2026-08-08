@@ -8,19 +8,8 @@
     "serve": "vue-cli-service serve",
     "build":  "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "electron:build": "vue-cli-service electron:build -p never",
-    "electron:build-all": "vue-cli-service electron:build -p never -mwl",
-    "electron:build-mac": "vue-cli-service electron:build -p never -m",
-    "electron:build-win": "vue-cli-service electron:build -p never -w",
-    "electron:build-linux": "vue-cli-service electron:build -p never -l",
-    "electron:serve": "vue-cli-service electron:serve",
-    "electron:buildicon": "electron-icon-builder --input=./build/icons/icon.png --output=build --flatten",
-    "electron:publish": "vue-cli-service electron:build -mwl -p always",
-    "postinstall": "electron-builder install-app-deps",
-    "postuninstall": "electron-builder install-app-deps",
     "prettier": "npx prettier --write ./src",
     "netease_api:run": "npx @neteaseapireborn/api"
-    
   },
   "main": "background.js",
   "engines": {
